@@ -14,20 +14,19 @@ const addContact = function(firstName, lastName, email) {
 }
 
 const addContacts = function(contactData) {
-  if (typeof contactData !== "object") {
+  if (!Array.isArray(contactData)) {
     throw new Error("New list of contacts must be an array")
   }
   try {
     contactData.forEach((element) => {
       allContacts.push(element)
     })
-  } catch (e) {
-    console.log(e)
+  } catch (error) {
+    console.log(error)
   }
 }
 
 const printContacts = function() {
-  console.log('printContacts:', 'TODO')
   console.log('Loading contact data...')
 
   let sortedContacts = allContacts.sort((a, b) => {
@@ -43,21 +42,10 @@ const printContacts = function() {
     return 0
   })
 
-  let longestNameLength = 0
-  for(let i = 0; i < sortedContacts.length; i++) {
-    let nameLength = sortedContacts[i]['first_name'].length + sortedContacts[i]['last_name'].length + 1
-    if (nameLength > longestNameLength) {
-      longestNameLength = nameLength
-    }
-  }
+  const longestNameLength = Math.max.apply(null, sortedContacts.map(contact => contact.first_name.length + contact.last_name.length + 1))
+  // creates an array of contact name lengths and finds the max
 
-  let longestEmailLength = 0
-  for (let i = 0; i < sortedContacts.length; i++) {
-    let emailLength = sortedContacts[i]['email'].length
-    if (emailLength > longestEmailLength) {
-      longestEmailLength = emailLength
-    }
-  }
+  const longestEmailLength = Math.max.apply(null, sortedContacts.map(contact => contact.email.length))
 
   console.log('...Finished loading contact data')
   console.log(`\n`)
@@ -72,11 +60,11 @@ const printContacts = function() {
   console.log(title)
   console.log(divider)
   sortedContacts.forEach((contact) => {
-    let wholeName = contact['first_name'] + " " + contact['last_name']
-    let line = "| " + wholeName +
+    const wholeName = contact.first_name + " " + contact.last_name
+    const line = "| " + wholeName +
       " ".repeat(longestNameLength - wholeName.length + 1) +
       "| " + contact['email'] +
-      " ".repeat(longestEmailLength - contact['email'].length + 1) +
+      " ".repeat(longestEmailLength - contact.email.length + 1) +
       "|"
     console.log(line)
   })
